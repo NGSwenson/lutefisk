@@ -111,3 +111,23 @@ test_that("lineage.hyper agrees with phyper on a hand example and with randomiza
 	expect_equal(p.an, mean(sim), tolerance = 0.15)
 	expect_equal(res$local.n[res$node == as.integer(node)], 4L)
 })
+
+test_that("phylo.hill matches hillR::hill_phylo and Faith at q = 0", {
+	skip_if_not_installed("hillR")
+	s <- as.matrix(PD.example.sample)
+	for (qq in c(0, 1, 2)) {
+		expect_equal(unname(phylo.hill(PD.example.phylo, s, q = qq)[, 1]),
+			unname(hillR::hill_phylo(s, PD.example.phylo, q = qq)), tolerance = 1e-6)
+	}
+	expect_equal(unname(phylo.hill(PD.example.phylo, s, q = 0)[, 1]),
+		unname(faith.pd(PD.example.phylo, s)))
+})
+
+test_that("tree-based beta diversity matches picante", {
+	skip_if_not_installed("picante")
+	u <- as.matrix(picante::unifrac(cdm, lefse.phylo))
+	p <- as.matrix(picante::phylosor(cdm, lefse.phylo))
+	off <- upper.tri(u)
+	expect_equal(unifrac.pairs(lefse.phylo, cdm)[off], u[off])
+	expect_equal(phylosor.pairs(lefse.phylo, cdm)[off], p[off])
+})

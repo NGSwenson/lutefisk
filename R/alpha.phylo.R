@@ -183,3 +183,60 @@ weighted.faith <- function(my.phylo, my.sample) {
 	names(out) <- rownames(x)
 	out
 }
+
+#' Phylogenetic Hill numbers
+#'
+#' Phylogenetic diversity of order \eqn{q} in the attribute diversity
+#' framework of Chao et al. (2010, 2014). For a tree of depth \eqn{T}, with
+#' branch lengths \eqn{L_i} and \eqn{a_i} the summed relative abundance of
+#' the species descending from branch \eqn{i},
+#' \deqn{{}^qPD(T) = \left[ \sum_i L_i (a_i / T)^q \right]^{1/(1-q)}}
+#' with the limit \eqn{\exp(-\sum_i L_i (a_i/T) \log(a_i/T))} at
+#' \eqn{q = 1}. At \eqn{q = 0} this is Faith's index including the root
+#' path; dividing by \eqn{T} gives the effective number of equally
+#' distinct lineages, which is in the same units as species richness and
+#' is what should be compared across trees of different depth.
+#'
+#' The computation is one matrix product of the relative abundance matrix
+#' with the tip-by-branch membership matrix, so all communities and all
+#' orders are handled at once.
+#'
+#' @inheritParams faith.pd
+#' @param q A vector of orders; 0, 1 and 2 are the usual choices.
+#' @param mean.pd Logical. Divide by the tree depth to return the
+#'   effective number of lineages?
+#' @return A matrix with one row per community and one column per order.
+#' @references Chao, A., Chiu, C.-H. and Jost, L. (2010) Phylogenetic
+#'   diversity measures based on Hill numbers. Philosophical Transactions
+#'   of the Royal Society B 365, 3599-3609.
+#' @examples
+#' data(PD.example.sample, PD.example.phylo)
+#' phylo.hill(PD.example.phylo, PD.example.sample, q = c(0, 1, 2))
+#' phylo.hill(PD.example.phylo, PD.example.sample, q = 0:2, mean.pd = TRUE)
+#' @export
+phylo.hill <- function(my.phylo, my.sample, q = c(0, 1, 2), mean.pd = FALSE) {
+	ra <- to.ra(my.sample)
+	if (!all(colnames(ra) %in% my.phylo$tip.label)) {
+		stop("all species in my.sample must be tips of my.phylo")
+	}
+	m <- branch.membership(my.phylo)[colnames(ra), , drop = FALSE]
+	bl <- my.phylo$edge.length
+	## depth of the tree: the longest root-to-tip path
+	depth <- max(ape::node.depth.edgelength(my.phylo))
+	## summed relative abundance under each branch, communities by branches
+	a <- ra %*% m
+	out <- sapply(q, function(qq) {
+		apply(a, 1, function(ai) {
+			ok <- ai > 0
+			p <- ai[ok] / depth
+			if (qq == 1) {
+				exp(-sum(bl[ok] * p * log(p)))
+			} else {
+				sum(bl[ok] * p^qq)^(1 / (1 - qq))
+			}
+		})
+	})
+	out <- matrix(out, nrow = nrow(ra), dimnames = list(rownames(ra), paste0("q", q)))
+	if (mean.pd) out <- out / depth
+	out
+}
