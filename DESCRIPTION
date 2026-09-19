@@ -1,13 +1,37 @@
-Package: lefse
+Package: lutefisk
 Type: Package
-Title: Phylogenetic and Functional Analyses for Ecology
-Version: 0.5
-Date: 2015-11-19
-Author: Nathan G. Swenson
-Maintainer: Nathan G. Swenson <swenson@umd.edu>
-Description: Utilizing phylogenetic and functional information for the analyses of ecological datasets. The analyses include methods for quantifying the phylogenetic and functional diversity of assemblages.
+Title: Functional and Phylogenetic Ecology in R
+Version: 1.0.0
+Date: 2026-09-19
+Authors@R: person("Nathan G.", "Swenson", email = "swenson228@gmail.com", role = c("aut", "cre"))
+Description: Functions, example datasets and worked analyses accompanying the
+    second edition of "Functional and Phylogenetic Ecology in R" (Springer,
+    Use R! series). The package is the successor to 'lefse' 0.5. It provides
+    hand-built, base-R implementations of the phylogenetic and functional
+    alpha and beta diversity metrics, null models, comparative methods and
+    lineage representation tests developed in the book, written so that the
+    arithmetic behind each metric is visible and, wherever the mathematics
+    allows, vectorized with matrix algebra rather than loops.
 License: GPL-2 | GPL-3
-Depends: R (>= 2.10)
-Imports: ape, picante, geiger, fBasics, SDMTools, vegan, FD, phytools
-NeedsCompilation: no
-Packaged: 2015-11-19 22:48:17 UTC; nathanswenson
+URL: https://github.com/NGSwenson/lutefisk
+BugReports: https://github.com/NGSwenson/lutefisk/issues
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Imports:
+    ape,
+    stats,
+    utils
+Suggests:
+    picante,
+    geiger,
+    vegan,
+    FD,
+    phytools,
+    geometry,
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+LazyData: true
+RoxygenNote: 7.3.2
+Config/testthat/edition: 3
+VignetteBuilder: knitr
