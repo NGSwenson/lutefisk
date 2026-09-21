@@ -113,3 +113,29 @@ NULL
 #' @aliases lutefisk
 #' @keywords internal
 "_PACKAGE"
+
+#' A larger simulated gradient system for comparing metrics
+#'
+#' One hundred species on a pure-birth phylogeny, three traits, and forty
+#' communities arrayed along an environmental gradient. Trait one evolved
+#' under Brownian motion and sets each species' environmental optimum; trait
+#' two is weakly conserved (Pagel's lambda of 0.3); trait three is unrelated
+#' to the phylogeny. Community abundances are Poisson draws whose means fall
+#' off with the distance between a species' trait one value and the
+#' community's environment, with a filter width that varies among
+#' communities, and with a secondary filter on trait three. The result is a
+#' set of communities that range from strongly phylogenetically clustered to
+#' overdispersed, which is what one wants for comparing metrics and null
+#' models. The script that built the data is in the package's
+#' \code{data-raw} directory.
+#'
+#' @format \code{gradient.sample} is a 40 by 100 data frame of abundances;
+#'   \code{gradient.phylo} is a \code{phylo} object with 100 tips;
+#'   \code{gradient.traits} is a 100 by 3 data frame; \code{gradient.env}
+#'   is a 40 by 4 data frame with coordinates \code{x} and \code{y} and
+#'   environmental variables \code{env1} and \code{env2}.
+#' @source Simulated for the second edition of the book.
+#' @name gradient.sample
+#' @aliases gradient.phylo gradient.traits gradient.env
+#' @keywords datasets
+NULL
