@@ -19,8 +19,7 @@ Encoding: UTF-8
 Depends: R (>= 4.1)
 Imports:
     ape,
-    stats,
-    utils
+    stats
 Suggests:
     picante,
     geiger,
